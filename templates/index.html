@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin: 20px; background: #f8f9fa; }
+        .container { max-width: 700px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }
+        h1 { color: #007bff; }
+        .stats { font-size: 18px; margin: 10px 0; }
+        .btn { display: block; margin: 10px auto; padding: 10px 20px; text-decoration: none; border-radius: 5px; color: white; font-weight: bold; text-align: center; }
+        .btn-blue { background: #007bff; }
+        .btn-green { background: #28a745; }
+        .btn-red { background: #dc3545; }
+        .btn:hover { opacity: 0.8; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Dashboard</h1>
+        <p class="stats">📊 Total Companies: <b>{{ total_companies }}</b></p>
+        <p class="stats">🆕 Newly Added Companies: <b>{{ new_companies }}</b></p>
+        <p class="stats">⏳ Last Checked: <b>{{ last_checked }}</b></p>
+        
+        <a class="btn btn-blue" href="{{ url_for('companies') }}">View All Companies</a>
+        <a class="btn btn-green" href="{{ url_for('fetch_new') }}">Fetch New Companies</a>
+        <a class="btn btn-red" href="{{ url_for('new_records') }}">View Newly Added</a>
+    </div>
+</body>
+</html>

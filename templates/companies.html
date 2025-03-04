@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Companies</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin: 20px; background: #f8f9fa; }
+        .container { max-width: 900px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background: #007bff; color: white; }
+        .copy-btn, .copy-all-btn { padding: 8px 12px; background: #28a745; color: white; border: none; cursor: pointer; border-radius: 5px; margin: 5px; }
+        .copy-btn:hover, .copy-all-btn:hover { background: #218838; }
+        .back-btn { display: inline-block; margin-top: 20px; padding: 10px 20px; background: #007bff; color: white; text-decoration: none; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Companies List</h1>
+
+        <!-- Copy All Button (Top) -->
+        <button class="copy-all-btn" onclick="copyAll()">Copy All Companies</button>
+
+        <table>
+            <tr>
+                <th>#</th>
+                <th>Company URL</th>
+                <th>Action</th>
+            </tr>
+            {% for id, company in companies %}
+            <tr>
+                <td>{{ id }}</td>
+                <td><a href="{{ company }}" target="_blank">{{ company }}</a></td>
+                <td><button class="copy-btn" onclick="copyText('{{ company }}')">Copy</button></td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <!-- Copy All Button (Bottom) -->
+        <button class="copy-all-btn" onclick="copyAll()">Copy All Companies</button>
+
+        <a class="back-btn" href="{{ url_for('index') }}">Back to Home</a>
+    </div>
+
+    <script>
+        function copyText(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert("Copied: " + text);
+            });
+        }
+
+        function copyAll() {
+            let textToCopy = "";
+            {% for id, company in companies %}
+                textToCopy += "{{ company }}\n";
+            {% endfor %}
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                alert("All company URLs copied successfully!");
+            });
+        }
+    </script>
+</body>
+</html>
