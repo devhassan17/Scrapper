@@ -65,7 +65,7 @@ def save_to_database(urls):
 def fetch_companies():
     conn = sqlite3.connect("companies.db")
     cursor = conn.cursor()
-    cursor.execute("SELECT id, url FROM companies")
+    cursor.execute("SELECT id, url FROM companies ORDER BY id DESC")  # Sort by ID (latest first)
     companies = cursor.fetchall()
     conn.close()
     return companies
