@@ -1,13 +1,50 @@
-from flask import Flask, render_template, send_file, redirect, url_for, request
+from flask import Flask, render_template, send_file, redirect, url_for, request, session
 import requests
 import sqlite3
 import xml.etree.ElementTree as ET
 from fpdf import FPDF
 import datetime
 from apscheduler.schedulers.background import BackgroundScheduler
+from datetime import timedelta
 
 app = Flask(__name__)
+app.secret_key = "Qwerty123!@#"  
+app.permanent_session_lifetime = timedelta(days=1)
 scheduler = BackgroundScheduler()
+
+USERNAME = "justin"
+PASSWORD = "Justin123!@#Scrapper"
+
+def is_logged_in():
+    return session.get("logged_in")
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
+
+        if username == USERNAME and password == PASSWORD:
+            session.permanent = True 
+            session["logged_in"] = True
+            return redirect(url_for("index"))
+        else:
+            return "Invalid credentials, try again!"
+
+    return render_template("login.html")
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("login"))
+
+def login_required(func):
+    def wrapper(*args, **kwargs):
+        if not is_logged_in():
+            return redirect(url_for("login"))
+        return func(*args, **kwargs)
+    wrapper.__name__ = func.__name__
+    return wrapper
 
 # Function to extract sitemap URLs from a given XML file
 def get_sitemap_urls(sitemap_url):
@@ -117,6 +154,7 @@ def generate_pdf():
 
 # Flask Route: Home Page
 @app.route('/')
+@login_required
 def index():
     companies = fetch_companies()
     total_companies = len(companies)
@@ -125,18 +163,21 @@ def index():
 
 # Flask Route: Show Companies
 @app.route('/companies')
+@login_required
 def companies():
     companies = fetch_companies()
     return render_template("companies.html", companies=companies)
 
 # Flask Route: Download PDF
 @app.route('/download')
+@login_required
 def download():
     pdf_file = generate_pdf()
     return send_file(pdf_file, as_attachment=True)
 
 # Flask Route: Manually Fetch New Companies
 @app.route('/fetch_new')
+@login_required
 def fetch_new():
     return manual_fetch_new()
 
@@ -154,6 +195,7 @@ def manual_fetch_new():
 
 # Flask Route: Show Recently Added Companies
 @app.route('/new_records')
+@login_required
 def new_records():
     conn = sqlite3.connect("companies.db")
     cursor = conn.cursor()
