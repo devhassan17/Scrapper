@@ -12,7 +12,7 @@ app.secret_key = "Qwerty123!@#"
 app.permanent_session_lifetime = timedelta(days=1)
 scheduler = BackgroundScheduler()
 
-USERNAME = "justin"
+USERNAME = "Justin"
 PASSWORD = "Justin123!@#Scrapper"
 
 def is_logged_in():
